@@ -10,6 +10,8 @@ import {
 } from "react-router-dom";
 import CreateTrivia from "./components/CreateTrivia";
 import ChooseTrivia from "./components/ChooseTrivia";
+import TriviaPage from "./components/TriviaPage";
+import { SocketProvider } from "./contexts/SocketContext";
 
 function App() {
   return (
@@ -19,6 +21,11 @@ function App() {
         <Route path="/create" element={<CreateTrivia />} />
         <Route path="/choose" element={<ChooseTrivia />} />
       </Routes>
+      <SocketProvider>
+        <Routes>
+          <Route path="/trivia/:id" element={<TriviaPage />} />
+        </Routes>
+      </SocketProvider>
     </div>
   );
 }

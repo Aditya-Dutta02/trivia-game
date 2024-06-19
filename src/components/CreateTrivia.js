@@ -1,14 +1,6 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
-
-const mongoose = require("mongoose");
-const uri =
-  "mongodb+srv://admin-dutta:password@triviagame.z5tjfxi.mongodb.net/?retryWrites=true&w=majority&appName=TriviaGame";
-
-const clientOptions = {
-  serverApi: { version: "1", strict: true, deprecationErrors: true },
-};
-await mongoose.connect(uri, clientOptions);
-await mongoose.connection.db.admin().command({ ping: 1 });
+import { Link } from "react-router-dom";
 
 export default function CreateTrivia() {
   const [quizName, setQuizname] = useState("");
@@ -21,11 +13,17 @@ export default function CreateTrivia() {
   const [opt3, setOpt3] = useState("");
   const [opt4, setOpt4] = useState("");
 
-  // const handleQuestions = (index, e) => {
-  //   if (e.target.id === "question") {
-  //     setQuestionStatement(e.target.value);
-  //   }
-  // };
+  const submitData = async (upload) => {
+    console.log("Uploading data");
+    console.log(upload);
+    try {
+      const res = await axios.post("http://localhost:5000/api/trivia", upload);
+      alert("Quiz Data Uploaded");
+      console.log(res);
+    } catch {
+      console.log("Error adding data");
+    }
+  };
 
   const handleAdd = (index, e) => {
     e.preventDefault();
@@ -45,6 +43,11 @@ export default function CreateTrivia() {
       ...newUpload,
     }));
     setIndex(index + 1);
+    setQuestionStatement("");
+    setCorrectAnswer("");
+    setOpt2("");
+    setOpt3("");
+    setOpt4("");
     console.log(upload);
   };
 
@@ -55,6 +58,7 @@ export default function CreateTrivia() {
     }));
     // console.log(quizName);
   }, [quizName]);
+
   return (
     <div className="trivia-container">
       <h1>Create your Quiz</h1>
@@ -70,7 +74,7 @@ export default function CreateTrivia() {
               onChange={(e) => setQuizname(e.target.value)}
             />
           </div>
-          <div>
+          {/* <div>
             <label for="questionNo">Number of Questions : </label>
             <input
               type="number"
@@ -80,11 +84,11 @@ export default function CreateTrivia() {
                 setNumQuestions(e.target.value);
               }}
             />
-          </div>
+          </div> */}
         </div>
         <div className="question-block" key={index}>
           <div className="question-stmt-div">
-            <label for="question">Question {index + 1} : </label>
+            <label for="question">Question {index + 1}</label>
             <textarea
               type="text"
               id="question"
@@ -147,7 +151,19 @@ export default function CreateTrivia() {
             />
           </div>
         </div>
+        <button
+          className="submit-btn"
+          type="submit"
+          onClick={() => submitData(upload)}
+        >
+          Submit
+        </button>
       </form>
+      <div className="back">
+        <Link className="back-btn" to="/">
+          Back
+        </Link>
+      </div>
     </div>
   );
 }
